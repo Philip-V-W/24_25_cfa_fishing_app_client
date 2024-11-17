@@ -3,7 +3,69 @@ import Link from "next/link";
 import {Button} from "@/components/ui/Button";
 import {CommunityIcon, ExpertIcon, QualityIcon} from "@/components/icons";
 
+const categories = [
+    {
+        name: 'Fishing Rods',
+        slug: 'fishing-rods',
+        image: '/images/categories/rods.webp'
+    },
+    {
+        name: 'Reels',
+        slug: 'reels',
+        image: '/images/categories/reels.jpg'
+    },
+    {
+        name: 'Lures & Baits',
+        slug: 'lures-baits',
+        image: '/images/categories/lures.jpg'
+    },
+    {
+        name: 'Lines',
+        slug: 'lines',
+        image: '/images/categories/lines.webp'
+    },
+    {
+        name: 'Tackle Boxes',
+        slug: 'tackle-boxes',
+        image: '/images/categories/tackle-boxes.avif'
+    },
+    {
+        name: 'Clothing',
+        slug: 'clothing',
+        image: '/images/categories/clothing.avif'
+    },
+    {
+        name: 'Electronics',
+        slug: 'electronics',
+        image: '/images/categories/electronics.jpeg'
+    },
+    {
+        name: 'Accessories',
+        slug: 'accessories',
+        image: '/images/categories/accessories.jpg'
+    },
+];
+
+const features = [
+    {
+        title: 'Quality Products',
+        description: 'Curated selection of premium fishing gear from trusted brands.',
+        icon: <QualityIcon/>
+    },
+    {
+        title: 'Expert Advice',
+        description: 'Get guidance from our experienced fishing enthusiasts.',
+        icon: <ExpertIcon/>
+    },
+    {
+        title: 'Local Community',
+        description: 'Join our fishing contests and connect with fellow anglers.',
+        icon: <CommunityIcon/>
+    }
+];
+
 export default function Home() {
+
     return (
         <div className="space-y-16">
             {/* Hero Section */}
@@ -12,11 +74,11 @@ export default function Home() {
                     <img
                         src="/images/hero-fishing.jpg"
                         alt="Fishing background"
-                        className="h-full w-full object-cover opacity-25"
+                        className="h-full w-full object-cover opacity-50"
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-900/50 to-black/50"/>
                 </div>
-                <div className="relative mx-auto max-w-2xl text-center">
+                <div className="relative mx-auto max-w-3xl text-center">
                     <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
                         Your Premier Fishing Store
                     </h1>
@@ -53,7 +115,7 @@ export default function Home() {
             </section>
 
             {/* Categories */}
-            <section className="bg-gray-50 dark:bg-dark-card -mx-4 px-4 py-12 rounded-xl">
+            <section className="bg-gray-50 dark:bg-dark-card px-4 py-12 rounded-xl">
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center">
                     Shop by Category
                 </h2>
@@ -104,48 +166,3 @@ export default function Home() {
     );
 }
 
-const categories = [
-    // TODO: Replace the image paths with the actual category images
-    {
-        name: 'Fishing Rods',
-        slug: 'fishing-rods',
-        // image: '/images/categories/rods.jpg'
-        image: '/images/temp.jpg'
-    },
-    {
-        name: 'Reels',
-        slug: 'reels',
-        // image: '/images/categories/reels.jpg'
-        image: '/images/temp.jpg'
-    },
-    {
-        name: 'Lures & Baits',
-        slug: 'lures-baits',
-        // image: '/images/categories/lures.jpg'
-        image: '/images/temp.jpg'
-    },
-    {
-        name: 'Accessories',
-        slug: 'accessories',
-        // image: '/images/categories/accessories.jpg'
-        image: '/images/temp.jpg'
-    }
-];
-
-const features = [
-    {
-        title: 'Quality Products',
-        description: 'Curated selection of premium fishing gear from trusted brands.',
-        icon: <QualityIcon/>
-    },
-    {
-        title: 'Expert Advice',
-        description: 'Get guidance from our experienced fishing enthusiasts.',
-        icon: <ExpertIcon/>
-    },
-    {
-        title: 'Local Community',
-        description: 'Join our fishing contests and connect with fellow anglers.',
-        icon: <CommunityIcon/>
-    }
-];
