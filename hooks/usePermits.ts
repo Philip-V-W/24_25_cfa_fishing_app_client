@@ -24,7 +24,7 @@ export function usePermits() {
     const downloadPermit = async (permitId: number) => {
         try {
             const data = await permitApi.downloadPermit(permitId);
-            // Handle file download (implement based on your needs)
+            // TODO: implement function
             console.log('Downloading permit:', permitId);
         } catch (err) {
             console.error('Error downloading permit:', err);

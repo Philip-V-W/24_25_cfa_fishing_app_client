@@ -1,68 +1,115 @@
-'use client';
-
 import {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
 import {useCart} from '@/context/CartContext';
-import {useAuth} from '@/context/AuthContext';
-import {useCheckout} from '@/hooks/checkout/useCheckout';
-import {paymentApi} from '@/lib/api/payment';
-import {Address} from "@/types/account";
+import {orderApi} from '@/lib/api/orders';
+import {accountApi} from '@/lib/api/account';
+import {Address} from '@/types/account';
+import {OrderRequest} from '@/types/payment';
 
 export function useCheckoutFlow() {
     const router = useRouter();
     const {cart, clearCart} = useCart();
-    const {user} = useAuth();
-    const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [clientSecret, setClientSecret] = useState<string | null>(null);
     const [orderId, setOrderId] = useState<number | null>(null);
-    const {createOrder} = useCheckout(cart);
-    const [error, setError] = useState<string | null>(null);
+    const [addresses, setAddresses] = useState<Address[]>([]);
+    const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
 
     useEffect(() => {
-        if (!user) {
+        const fetchAddresses = async () => {
+            try {
+                setLoading(true);
+                const fetchedAddresses = await accountApi.getAddresses();
+                if (fetchedAddresses) {
+                    setAddresses(fetchedAddresses);
+                    const defaultAddress = fetchedAddresses.find(addr => addr.isDefault);
+                    if (defaultAddress) {
+                        setSelectedAddressId(defaultAddress.id);
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch addresses:', err);
+                setError('Failed to load shipping addresses. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        const token = localStorage.getItem('token');
+        if (token) {
+            fetchAddresses();
+        } else {
             router.push('/auth/login?redirect=/checkout');
-            return;
         }
-        if (cart.items.length === 0) {
-            router.push('/cart');
-        }
-    }, [user, cart.items.length, router]);
+    }, [router]);
 
     const handlePaymentStart = async () => {
-        if (!selectedAddress) {
-            setError('Please select a shipping address');
-            return;
-        }
-
         try {
-            const response = await createOrder(selectedAddress.id);
+            setLoading(true);
+            setError(null);
+
+            if (!selectedAddressId) {
+                throw new Error('Please select a shipping address');
+            }
+
+            if (!cart.items.length) {
+                throw new Error('Your cart is empty');
+            }
+
+            const selectedAddress = addresses.find(addr => addr.id === selectedAddressId);
+            if (!selectedAddress) {
+                throw new Error('Selected address not found');
+            }
+
+            const orderRequest: OrderRequest = {
+                items: cart.items.map(item => ({
+                    productId: item.product.id,
+                    quantity: item.quantity
+                })),
+                shippingAddress: selectedAddress.streetAddress
+            };
+
+            const response = await orderApi.createOrder(orderRequest);
+
+            if (!response?.clientSecret || !response?.orderId) {
+                throw new Error('Invalid response from server');
+            }
+
             setClientSecret(response.clientSecret);
             setOrderId(response.orderId);
+
         } catch (err) {
             console.error('Payment initialization error:', err);
+            setError(err instanceof Error ? err.message : 'Failed to initialize payment');
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handlePaymentSuccess = async (paymentIntentId: string) => {
-        if (!orderId) return;
-
+    const handlePaymentSuccess = async (confirmedOrderId: number, paymentIntentId: string) => {
         try {
-            await paymentApi.confirmPayment(orderId, paymentIntentId);
+            setLoading(true);
+            await orderApi.confirmPayment(confirmedOrderId, paymentIntentId);
             clearCart();
             router.push('/checkout/success');
         } catch (err) {
             console.error('Payment confirmation error:', err);
             router.push('/checkout/cancel');
+        } finally {
+            setLoading(false);
         }
     };
 
     return {
-        user,
         cart,
+        loading,
         error,
         clientSecret,
-        selectedAddress,
-        setSelectedAddress,
+        orderId,
+        addresses,
+        selectedAddressId,
+        setSelectedAddressId,
         handlePaymentStart,
         handlePaymentSuccess
     };

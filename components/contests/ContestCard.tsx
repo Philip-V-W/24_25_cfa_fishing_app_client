@@ -1,4 +1,4 @@
-import {ContestResponse, ContestStatus, RegistrationStatus} from "@/types/contest";
+import {ContestResponse, ContestStatus} from "@/types/contest";
 import {Card} from "@/components/ui/Card";
 import Link from "next/link";
 import {Button} from "@/components/ui/Button";

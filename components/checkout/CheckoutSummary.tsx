@@ -8,7 +8,7 @@ interface OrderSummaryProps {
     onCheckout: () => Promise<void>;
 }
 
-export function CheckoutSummary({cart, loading}: OrderSummaryProps) {
+export function CheckoutSummary({cart}: OrderSummaryProps) {
     const subtotal = cart.items.reduce((total, item) =>
         total + (item.product.price * item.quantity), 0);
     const shippingCost = subtotal >= 100 ? 0 : 10;

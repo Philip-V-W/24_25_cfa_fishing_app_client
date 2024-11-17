@@ -1,3 +1,14 @@
+// types/payment.ts
+export interface OrderRequest {
+    items: OrderItemRequest[];
+    shippingAddress: string;
+}
+
+export interface OrderItemRequest {
+    productId: number;
+    quantity: number;
+}
+
 export interface PaymentResponse {
     clientSecret: string;
     paymentIntentId: string;
@@ -6,22 +17,30 @@ export interface PaymentResponse {
     orderId: number;
 }
 
-export interface OrderRequest {
-    shippingAddress?: number;
-    items: {
-        productId: number;
-        quantity: number;
-    }[];
+export interface OrderResponse {
+    id: number;
+    customerEmail: string;
+    orderDate: string;
+    status: OrderStatus;
+    totalAmount: number;
+    shippingAddress: string;
+    trackingNumber: string | null;
+    items: OrderItemResponse[];
 }
 
-export interface CreateCheckoutSessionRequest {
-    items: {
-        productId: number;
-        quantity: number;
-    }[];
+export interface OrderItemResponse {
+    productId: number;
+    productName: string;
+    quantity: number;
+    price: number;
+    subtotal: number;
 }
 
-export interface CheckoutSessionResponse {
-    sessionUrl: string;
-    sessionId: string;
+export enum OrderStatus {
+    PENDING = 'PENDING',
+    PAID = 'PAID',
+    PROCESSING = 'PROCESSING',
+    SHIPPED = 'SHIPPED',
+    DELIVERED = 'DELIVERED',
+    CANCELLED = 'CANCELLED'
 }

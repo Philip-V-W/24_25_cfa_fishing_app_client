@@ -21,7 +21,7 @@ export function useRegisterContest(contestId: string) {
 
         try {
             await contestApi.register(Number(contestId));
-            router.push('/contests'); // Changed: Redirect to contests page after successful registration
+            router.push('/contests');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to register for contest');
         } finally {

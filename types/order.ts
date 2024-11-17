@@ -6,32 +6,37 @@ export enum OrderStatus {
     CANCELLED = 'CANCELLED'
 }
 
+export interface OrderRequest {
+    items: {
+        productId: number;
+        quantity: number;
+    }[];
+    shippingAddress: string; // Changed from object to string
+}
+
 export interface OrderItemRequest {
     productId: number;
     quantity: number;
 }
 
-export interface OrderItemResponse {
-    productId: number;
-    productName: string;
-    quantity: number;
-    price: number;
-    subtotal: number;
-}
-
-export interface OrderRequest {
-    shippingAddress: string;
-    items: OrderItemRequest[];
+export interface PaymentResponse {
+    clientSecret: string;
+    orderId: number;
+    paymentIntentId: string;
 }
 
 export interface OrderResponse {
     id: number;
-    customerEmail: string;
     orderDate: string;
-    status: OrderStatus;
+    status: string;
     totalAmount: number;
-    shippingAddress: string;
-    trackingNumber: string;
     items: OrderItemResponse[];
+    shippingAddress?: string;
 }
 
+export interface OrderItemResponse {
+    id: number;
+    productId: number;
+    quantity: number;
+    price: number;
+}

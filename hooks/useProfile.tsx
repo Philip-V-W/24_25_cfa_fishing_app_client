@@ -24,7 +24,7 @@ export function useProfile() {
     const updateProfile = async (updatedProfile: UserProfileUpdateRequest) => {
         try {
             await accountApi.updateProfile(updatedProfile);
-            await loadProfile(); // Refresh the profile after update
+            await loadProfile();
         } catch (err) {
             console.error('Update failed:', err);
             throw err;

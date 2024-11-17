@@ -8,7 +8,7 @@ export function ContestRules() {
                 <li>Follow all contest rules and regulations</li>
                 <li>Arrive on time at the specified location</li>
                 <li>Bring valid identification and fishing license</li>
-                <li>Accept the judges' decisions as final</li>
+                <li>Accept the judges decisions as final</li>
             </ul>
         </div>
     );

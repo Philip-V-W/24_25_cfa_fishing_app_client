@@ -1,19 +1,27 @@
 import {fetchApi} from './config';
-import type {OrderResponse, OrderRequest} from '@/types/order';
-import {OrderStatus} from '@/types/order';
+import {OrderRequest, OrderResponse, PaymentResponse} from '@/types/payment';
+import {OrderStatus} from "@/types/order";
 
 export const orderApi = {
+    createOrder: async (request: OrderRequest): Promise<PaymentResponse> => {
+        const response = await fetchApi<PaymentResponse>('/api/orders', {
+            method: 'POST',
+            body: JSON.stringify(request)
+        });
+        return response!;
+    },
+
+    confirmPayment: async (orderId: number, paymentIntentId: string): Promise<OrderResponse> => {
+        const response = await fetchApi<OrderResponse>(`/api/orders/${orderId}/confirm-payment?paymentIntentId=${paymentIntentId}`, {
+            method: 'POST'
+        });
+        return response!;
+    },
+
     getAll: async () => {
         return await fetchApi<OrderResponse[]>('/api/orders');
     },
 
-    createCheckoutOrder: async (request: OrderRequest) => {
-        return await fetchApi<OrderResponse>('/api/orders', {
-            method: 'POST',
-            body: JSON.stringify(request),
-            headers: {'Content-Type': 'application/json'}
-        });
-    },
 
     cancelOrder: async (orderId: number) => {
         return await fetchApi<void>(`/api/orders/${orderId}/cancel`, {

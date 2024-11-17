@@ -6,7 +6,6 @@ import type {OrderResponse} from '@/types/order';
 
 const OrderStatusColors = {
     PENDING: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-    PAID: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
     PROCESSING: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
     SHIPPED: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400',
     DELIVERED: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
@@ -29,7 +28,7 @@ export function OrderCard({order, onCancel}: OrderCardProps) {
                                 Order #{order.id}
                             </h3>
                             <span className={`px-3 py-1 rounded-full text-sm font-medium 
-                                ${OrderStatusColors[order.status]}`}>
+                                ${OrderStatusColors[order.status as keyof typeof OrderStatusColors]}`}>
                                 {order.status}
                             </span>
                         </div>
@@ -39,7 +38,7 @@ export function OrderCard({order, onCancel}: OrderCardProps) {
                     </div>
                     <div className="text-right">
                         <p className="text-lg font-bold text-gray-900 dark:text-white">
-                            ${order.totalAmount}
+                            ${order.totalAmount.toFixed(2)}
                         </p>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                             {order.items.length} items
@@ -52,19 +51,19 @@ export function OrderCard({order, onCancel}: OrderCardProps) {
                     <div className="space-y-4">
                         {order.items.map((item) => (
                             <div
-                                key={item.productId}
+                                key={item.id}
                                 className="flex items-center space-x-4"
                             >
                                 <div className="flex-1">
                                     <p className="text-gray-900 dark:text-white font-medium">
-                                        {item.productName}
+                                        Product ID: {item.productId}
                                     </p>
                                     <p className="text-sm text-gray-600 dark:text-gray-400">
                                         Quantity: {item.quantity}
                                     </p>
                                 </div>
                                 <p className="text-gray-900 dark:text-white font-medium">
-                                    ${item.subtotal}
+                                    ${(item.price * item.quantity).toFixed(2)}
                                 </p>
                             </div>
                         ))}
@@ -75,18 +74,13 @@ export function OrderCard({order, onCancel}: OrderCardProps) {
                 <div className="mt-6 border-t dark:border-dark-border pt-6">
                     <div className="flex justify-between items-center">
                         <div>
-                            {order.trackingNumber && (
-                                <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    Tracking: {order.trackingNumber}
-                                </p>
-                            )}
                             {order.shippingAddress && (
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
                                     Shipping to: {order.shippingAddress}
                                 </p>
                             )}
                         </div>
-                        <div className="flex space-x-4">
+                        <div>
                             {order.status === 'PENDING' && (
                                 <Button
                                     variant="outline"
@@ -96,11 +90,6 @@ export function OrderCard({order, onCancel}: OrderCardProps) {
                                     Cancel Order
                                 </Button>
                             )}
-                            {order.trackingNumber && (
-                                <Button variant="outline">
-                                    Track Order
-                                </Button>
-                            )}
                         </div>
                     </div>
                 </div>
@@ -108,3 +97,5 @@ export function OrderCard({order, onCancel}: OrderCardProps) {
         </Card>
     );
 }
+
+export default OrderCard;

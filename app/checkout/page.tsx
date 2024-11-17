@@ -13,18 +13,19 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 export default function CheckoutPage() {
     const {
-        user,
         cart,
         loading,
         error,
         clientSecret,
-        selectedAddress,
-        setSelectedAddress,
+        orderId,
+        addresses,
+        selectedAddressId,
+        setSelectedAddressId,
         handlePaymentStart,
         handlePaymentSuccess
     } = useCheckoutFlow();
 
-    if (!user || cart.items.length === 0) {
+    if (cart.items.length === 0) {
         return null;
     }
 
@@ -41,8 +42,9 @@ export default function CheckoutPage() {
                             Shipping Address
                         </h2>
                         <ShippingForm
-                            onAddressSelect={setSelectedAddress}
-                            selectedAddress={selectedAddress}
+                            addresses={addresses}
+                            selectedAddressId={selectedAddressId}
+                            onAddressSelect={setSelectedAddressId}
                         />
                     </Card>
 
@@ -50,9 +52,10 @@ export default function CheckoutPage() {
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
                             Payment
                         </h2>
-                        {clientSecret ? (
+                        {clientSecret && orderId ? (
                             <Elements stripe={stripePromise} options={{clientSecret}}>
                                 <CheckoutForm
+                                    orderId={orderId}
                                     clientSecret={clientSecret}
                                     onPaymentSuccess={handlePaymentSuccess}
                                 />
@@ -69,7 +72,7 @@ export default function CheckoutPage() {
                                     variant="primary"
                                     className="w-full"
                                     onClick={handlePaymentStart}
-                                    disabled={loading || !selectedAddress}
+                                    disabled={loading || !selectedAddressId}
                                 >
                                     {loading ? 'Processing...' : 'Proceed to Payment'}
                                 </Button>
