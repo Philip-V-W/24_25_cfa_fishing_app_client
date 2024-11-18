@@ -1,15 +1,13 @@
 import {ProductResponse} from "@/types/product";
-import {useState} from "react";
 import {ProductCard} from "@/components/admin/products/ProductCard";
 
 interface ProductGridProps {
     products: ProductResponse[];
     onToggleStatus: (productId: number, currentStatus: boolean) => Promise<void>;
+    onEdit: (product: ProductResponse) => void;
 }
 
-export function ProductGrid({ products, onToggleStatus }: ProductGridProps) {
-    const [selectedProduct, setSelectedProduct] = useState<ProductResponse | null>(null);
-
+export function ProductGrid({products, onToggleStatus, onEdit}: ProductGridProps) {
     if (products.length === 0) {
         return (
             <div className="text-center py-12">
@@ -27,7 +25,7 @@ export function ProductGrid({ products, onToggleStatus }: ProductGridProps) {
                     key={product.id}
                     product={product}
                     onToggleStatus={onToggleStatus}
-                    onEdit={setSelectedProduct}
+                    onEdit={onEdit}
                 />
             ))}
         </div>

@@ -3,7 +3,7 @@
 import {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
 import {useAuth} from '@/context/AuthContext';
-import {ProductResponse, ProductCategory} from '@/types/product';
+import {ProductResponse, ProductCategory, ProductRequest} from '@/types/product';
 import {productApi} from '@/lib/api/products';
 
 interface ProductFilters {
@@ -51,12 +51,22 @@ export function useAdminProducts() {
         }
     };
 
-    const toggleProductStatus = async (productId: number, currentStatus: boolean) => {
+    const toggleProductStatus = async (productId: number,) => {
         try {
             await productApi.toggleStatus(productId);
             await loadProducts();
         } catch (err) {
             console.error('Error updating product status:', err);
+        }
+    };
+
+    const updateProduct = async (productId: number, data: ProductRequest) => {
+        try {
+            await productApi.updateProduct(productId, data);
+            await loadProducts();
+        } catch (err) {
+            console.error('Error updating product:', err);
+            throw err;
         }
     };
 
@@ -76,6 +86,7 @@ export function useAdminProducts() {
         filters,
         setFilters,
         loadProducts,
-        toggleProductStatus
+        toggleProductStatus,
+        updateProduct,
     };
 }

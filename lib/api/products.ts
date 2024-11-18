@@ -1,5 +1,5 @@
 import {fetchApi} from './config';
-import {ProductCategory, ProductResponse} from '@/types/product';
+import {ProductCategory, ProductRequest, ProductResponse} from '@/types/product';
 
 export const productApi = {
     getAll: async () => {
@@ -25,6 +25,20 @@ export const productApi = {
         );
     },
 
+    updateProduct: async (productId: number, data: ProductRequest) => {
+        return await fetchApi<ProductResponse>(
+            `/api/admin/products/${productId}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }
+        );
+    },
+
     delete: async (id: number) => {
         return await fetchApi<void>(`/api/products/${id}`, {
             method: 'DELETE'
@@ -32,7 +46,7 @@ export const productApi = {
     },
 
     getAllForAdmin: async () => {
-        return await fetchApi<ProductResponse[]>('/api/products', {
+        return await fetchApi<ProductResponse[]>('/api/admin/products', {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }

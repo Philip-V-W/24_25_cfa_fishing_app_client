@@ -11,7 +11,7 @@ import {Card} from "@/components/ui/Card";
 import Link from "next/link";
 
 export default function AdminDashboard() {
-    const {stats, loading, error, dateRange, setDateRange} = useAdminDashboard();
+    const {stats, loading, dateRange, setDateRange} = useAdminDashboard();
 
     if (loading) {
         return <LoadingSpinner/>;
