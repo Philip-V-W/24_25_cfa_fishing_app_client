@@ -8,7 +8,7 @@ might need to use force because of new react/nexjs version
 npm i --force
 ````
 
-### run the project
+### Run the project
 ```bash
 npm run dev
 # or
@@ -18,3 +18,11 @@ pnpm dev
 # or
 bun dev
 ```
+
+### Account infos
+
+admin@fishing.com
+admin123
+
+customer@example.com
+customer123
